@@ -1,32 +1,43 @@
-# Actividad 6 - Determinación de Límites Seguros
+# Actividad 6: Determinación de Límites Seguros
 
 ## 📖 Descripción
-Esta actividad implementa un **Asistente Visual Interactivo** para calibrar y determinar experimentalmente los límites seguros del robot Phantom X Pincher X100. 
+En la presente actividad se implementa un **Asistente Visual Interactivo** destinado a la calibración y determinación experimental de los límites seguros de operación para el manipulador Phantom X Pincher X100. 
 
-Siguiendo estrictamente las directrices del laboratorio, el programa permite registrar manualmente las posiciones extremas de cada motor para calcular un rango de operación seguro. Genera automáticamente la tabla de parámetros (*Articulación, Límite inferior, Límite superior y Margen de seguridad*) y exporta esta información. En actividades futuras, estos datos se utilizarán para impedir a nivel de software el envío de valores ubicados fuera de estos límites y evitar colisiones contra los topes mecánicos.
+En estricto apego a las directrices de la práctica, el algoritmo permite el registro manual de las posiciones extremas de cada actuador para el cálculo del rango operativo seguro. Se genera de forma automática una tabla de parámetros (*Articulación, Límite inferior, Límite superior y Margen de seguridad*) procediendo a su respectiva exportación. En etapas posteriores del desarrollo, dichos datos son empleados para restringir a nivel de software cualquier comando de posición que exceda estos umbrales, previniendo colisiones contra los topes mecánicos del sistema.
 
 ## 🛠️ Requisitos
-Al ser un sistema Ubuntu con ROS 2 Jazzy, las dependencias gráficas deben instalarse mediante los repositorios del sistema operativo (`apt`) para mantener limpio el entorno global:
+Dado el uso del sistema operativo Ubuntu bajo el marco de ROS 2 Jazzy, se requiere la instalación de las dependencias gráficas a través del gestor de paquetes del sistema (`apt`) con el objetivo de preservar la integridad del entorno global.
 
-    sudo apt update
-    sudo apt install python3-tk
+```bash
+sudo apt update
+sudo apt install python3-tk
+```
 
-## 🚀 Ejecución
-Ubícate en tu workspace de ROS 2 y ejecuta el script de la interfaz:
+## 🚀 Instrucciones de Ejecución
+Para la ejecución de la interfaz gráfica, se debe ingresar al espacio de trabajo, cargar el entorno y ejecutar el script correspondiente mediante las siguientes instrucciones:
 
-    cd ~/ros2_jazzy/Lab5/Codigos/phantom_ws
-    python3 mis_actividades/actividad6.py
+```bash
+# 1. Navegación al espacio de trabajo
+cd ~/Laboratorio5/phantom_ws
+
+# 2. Carga del entorno de ROS 2 y del workspace compilado
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+# 3. Ejecución de la interfaz de límites seguros
+python3 mis_actividades/actividad6.py
+```
 
 ## 🎯 Interfaz y Flujo de Trabajo
-1. **Torque OFF Automático:** Apenas se inicia la interfaz, el sistema apaga el torque de los Dynamixel de forma automática para permitirte mover el robot libremente con tus manos.
-2. **Configuración del Margen:** En el panel global puedes ajustar el "Margen de seguridad" en grados (por defecto 5.0°). Este valor se restará/sumará a los extremos que registres para crear el "colchón" de seguridad.
+1. **Desactivación Automática del Torque:** Al inicializarse la interfaz, el sistema interrumpe de forma automática el torque de los servomotores Dynamixel, permitiendo el posicionamiento manual y libre del manipulador.
+2. **Configuración del Margen de Seguridad:** Desde el panel global es posible definir el parámetro "Margen de seguridad" expresado en grados (por defecto, configurado en $5.0^\circ$). Este valor es compensado matemáticamente (sumado o restado) a los extremos registrados con el fin de establecer una franja de resguardo.
 3. **Calibración Manual por Articulación:**
-   * Selecciona la articulación en el menú desplegable (Base, Hombro, Codo, Muñeca, Pinza).
-   * Mueve el eslabón físicamente con tu mano cerca de su tope mecánico y haz clic en **📸 REGISTRAR EXTREMO 1**.
-   * Mueve el eslabón hacia el lado opuesto y haz clic en **📸 REGISTRAR EXTREMO 2**.
-4. **Tabla Dinámica:** Inmediatamente después de registrar ambos extremos, la tabla de Límites Seguros se llenará con los cálculos exactos.
-5. **Exportación:** Cuando hayas registrado las 5 articulaciones, se habilitará el botón verde inferior. Al pulsarlo, se creará la carpeta `limites_act6` exportando los resultados consolidados en formatos `limites_seguros.csv` y `limites_seguros.json`.
+   * Se debe seleccionar la articulación a calibrar mediante el menú desplegable (Base, Hombro, Codo, Muñeca, Pinza).
+   * El eslabón correspondiente debe ser desplazado físicamente hacia las proximidades de su primer tope mecánico, procediendo a registrar el punto mediante el botón **📸 REGISTRAR EXTREMO 1**.
+   * Acto seguido, el eslabón debe ser desplazado hacia la frontera opuesta para su registro mediante el botón **📸 REGISTRAR EXTREMO 2**.
+4. **Actualización de Tabla Dinámica:** Tras la captura de ambos extremos articulares, la tabla de Límites Seguros es actualizada de manera instantánea con los valores computados.
+5. **Exportación de Datos:** Una vez registradas las 5 articulaciones, el sistema habilita el control de exportación. Su activación genera automáticamente el directorio `limites_act6` en la ruta del espacio de trabajo, almacenando los resultados consolidados en los formatos `limites_seguros.csv` y `limites_seguros.json`.
 
-## ⚠️ Herramientas de Seguridad
-* **Reinicio de Motores:** Si en algún momento sientes resistencia en los motores, presiona "🔄 REINICIAR MOTORES (Torque OFF)" para liberarlos.
-* **Monitor en Vivo:** Observa siempre el texto verde "Posición:" para asegurarte de que el encoder del motor está registrando tu movimiento manual en tiempo real antes de capturar el punto.
+## ⚠️ Consideraciones de Seguridad
+* **Liberación de Actuadores:** En caso de detectarse resistencia mecánica en las articulaciones, se dispone del comando "🔄 REINICIAR MOTORES (Torque OFF)" para forzar la liberación de los mismos.
+* **Monitorización en Tiempo Real:** Se recomienda inspeccionar continuamente el indicador numérico "Posición:", garantizando de esta manera que el encoder del actuador se encuentre registrando el desplazamiento manual previo a la captura definitiva del punto.
