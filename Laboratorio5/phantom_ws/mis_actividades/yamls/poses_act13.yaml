@@ -1,0 +1,28 @@
+- nombre: Pose 1
+  q:
+    base: 111.5
+    hombro: 50.0
+    codo: -70.5
+    muneca: 83.0
+    pinza: -3.0000000000000004
+- nombre: Pose 2
+  q:
+    base: -79.5
+    hombro: 68.0
+    codo: -74.0
+    muneca: -95.0
+    pinza: 24.5
+- nombre: Pose 3
+  q:
+    base: 93.0
+    hombro: 47.0
+    codo: 39.5
+    muneca: 95.0
+    pinza: -10.5
+- nombre: Pose 4
+  q:
+    base: 0.0
+    hombro: 0.0014332512383836993
+    codo: 0.0012064199964746268
+    muneca: 0.0
+    pinza: 0.0
