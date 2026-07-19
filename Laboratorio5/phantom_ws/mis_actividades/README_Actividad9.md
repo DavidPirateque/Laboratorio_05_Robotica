@@ -20,7 +20,8 @@ $$q(t) = a_0 + a_1 t$$
 
 Aplicando las condiciones de frontera para la posición inicial ($q(0) = q_0$) y final ($q(t_f) = q_f$), se determinan los coeficientes polinomiales:
 
-$$\begin{aligned}a_0 &= q_0 \\ a_1 &= \frac{q_f - q_0}{t_f}\end{aligned}$$
+$$a_0 = q_0$$
+$$a_1 = \frac{q_f - q_0}{t_f}$$
 
 **Consideración Dinámica:** Al derivar la ecuación de posición, se obtiene una velocidad constante equivalente a $a_1$. Esto implica requerimientos de aceleración teóricamente infinitos en los instantes de arranque ($t=0$) y frenado ($t=t_f$). En la implementación física, esto se traduce en sobreesfuerzos mecánicos y movimientos bruscos por parte de los servomotores Dynamixel.
 
@@ -41,7 +42,10 @@ El modelo exige el cumplimiento de cuatro condiciones de frontera geométricas y
 
 Al evaluar estas condiciones en las ecuaciones polinomiales, se establece un sistema de ecuaciones cuya resolución define los coeficientes articulares:
 
-$$\begin{aligned}a_0 &= q_0 \\ a_1 &= 0 \\ a_2 &= \frac{3(q_f - q_0)}{t_f^2} \\ a_3 &= -\frac{2(q_f - q_0)}{t_f^3}\end{aligned}$$
+$$a_0 = q_0$$
+$$a_1 = 0$$
+$$a_2 = \frac{3(q_f - q_0)}{t_f^2}$$
+$$a_3 = -\frac{2(q_f - q_0)}{t_f^3}$$
 
 **Consideración Dinámica:** La adición de restricciones de velocidad nula genera un perfil de posición en forma de "S". Esto asegura un arranque progresivo y una desaceleración suave en la proximidad del objetivo, optimizando el seguimiento de trayectoria y prolongando la vida útil del hardware robótico.
 
