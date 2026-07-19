@@ -37,7 +37,7 @@ Proporciona una medida estadística integral del seguimiento a lo largo de toda 
 
 $$MSE = \frac{1}{N} \sum_{i=1}^{N} (e_i)^2$$
 
-*(Donde $N$ representa el número total de muestras discretas registradas durante el tiempo de la prueba).*
+*(Donde N representa el número total de muestras discretas registradas durante el tiempo de la prueba).*
 
 ---
 
