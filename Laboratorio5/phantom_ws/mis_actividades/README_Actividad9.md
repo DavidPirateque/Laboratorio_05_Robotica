@@ -15,19 +15,22 @@ Para la generación de las trayectorias, el algoritmo calcula los puntos interme
 
 ### 1. Interpolación Lineal (Polinomio de Grado 1)
 Este método genera una ruta de velocidad constante entre ambos puntos. La ecuación de posición escalar se define como:
+
 $$q(t) = a_0 + a_1 t$$
 
 Aplicando las condiciones de frontera para la posición inicial ($q(0) = q_0$) y final ($q(t_f) = q_f$), se determinan los coeficientes polinomiales:
-$$a_0 = q_0$$
-$$a_1 = \frac{q_f - q_0}{t_f}$$
+
+$$\begin{aligned}a_0 &= q_0 \\ a_1 &= \frac{q_f - q_0}{t_f}\end{aligned}$$
 
 **Consideración Dinámica:** Al derivar la ecuación de posición, se obtiene una velocidad constante equivalente a $a_1$. Esto implica requerimientos de aceleración teóricamente infinitos en los instantes de arranque ($t=0$) y frenado ($t=t_f$). En la implementación física, esto se traduce en sobreesfuerzos mecánicos y movimientos bruscos por parte de los servomotores Dynamixel.
 
 ### 2. Interpolación Cúbica (Polinomio de Grado 3)
 Con el objetivo de mitigar las discontinuidades de velocidad y garantizar un desplazamiento suave, se implementa un polinomio de tercer grado. Este modelo permite imponer restricciones de velocidad nula en los extremos del movimiento:
+
 $$q(t) = a_0 + a_1 t + a_2 t^2 + a_3 t^3$$
 
 La ecuación de velocidad se obtiene mediante la derivada de la posición con respecto al tiempo:
+
 $$v(t) = \dot{q}(t) = a_1 + 2a_2 t + 3a_3 t^2$$
 
 El modelo exige el cumplimiento de cuatro condiciones de frontera geométricas y cinemáticas:
@@ -37,10 +40,8 @@ El modelo exige el cumplimiento de cuatro condiciones de frontera geométricas y
 4. Velocidad de llegada nula: $v(t_f) = 0$
 
 Al evaluar estas condiciones en las ecuaciones polinomiales, se establece un sistema de ecuaciones cuya resolución define los coeficientes articulares:
-$$a_0 = q_0$$
-$$a_1 = 0$$
-$$a_2 = \frac{3(q_f - q_0)}{t_f^2}$$
-$$a_3 = -\frac{2(q_f - q_0)}{t_f^3}$$
+
+$$\begin{aligned}a_0 &= q_0 \\ a_1 &= 0 \\ a_2 &= \frac{3(q_f - q_0)}{t_f^2} \\ a_3 &= -\frac{2(q_f - q_0)}{t_f^3}\end{aligned}$$
 
 **Consideración Dinámica:** La adición de restricciones de velocidad nula genera un perfil de posición en forma de "S". Esto asegura un arranque progresivo y una desaceleración suave en la proximidad del objetivo, optimizando el seguimiento de trayectoria y prolongando la vida útil del hardware robótico.
 
