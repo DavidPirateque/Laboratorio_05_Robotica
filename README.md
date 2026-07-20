@@ -106,7 +106,10 @@ source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
 # 3. Lanzamiento del controlador (Ejemplo para simulación visual en RViz)
+
 ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py
+
+ros2 launch phantomx_pincher_moveit_config move_group.launch.py
 ```
 
 **Terminal 2: Ejecución de Actividades y GUIs**
