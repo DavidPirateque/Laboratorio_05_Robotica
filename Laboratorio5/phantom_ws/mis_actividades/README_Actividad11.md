@@ -13,28 +13,35 @@ Adicionalmente, la interfaz permite evaluar la cinemática directa para las cinc
 
 La cinemática directa se resuelve mediante la asignación sistemática de sistemas de referencia a cada eslabón del manipulador. A continuación, se presenta la tabla de parámetros de Denavit-Hartenberg extraída de la arquitectura mecánica del Phantom X Pincher:
 
-| Articulación ($i$) | $\theta_i$ (Rotación Z) | $d_i$ (Traslación Z) | $a_i$ (Traslación X) | $\alpha_i$ (Rotación X) |
+| Junta $i$ | $\theta_i$ | $d_i$ | $a_i$ | $\alpha_i$ |
 | :---: | :---: | :---: | :---: | :---: |
-| **1 (Base)** | $q_1$ | $L_1$ | $0$ | $\frac{\pi}{2}$ |
-| **2 (Hombro)** | $q_2 - \frac{\pi}{2}$ | $0$ | $L_2$ | $0$ |
-| **3 (Codo)** | $q_3$ | $0$ | $L_3$ | $0$ |
-| **4 (Muñeca)** | $q_4$ | $0$ | $L_4$ | $0$ |
+| **1** | $\theta_1$ | $L_1$ | $0$ | $-90^\circ$ |
+| **2** | $\theta_2$ | $0$ | $L_2$ | $0^\circ$ |
+| **3** | $\theta_3$ | $0$ | $L_3$ | $0^\circ$ |
+| **4** | $\theta_4$ | $0$ | $L_4$ | $0^\circ$ |
 
 *(Nota: Los términos $L_1, L_2, L_3, L_4$ corresponden a las longitudes físicas de los eslabones medidas en milímetros).*
 
 ### Matrices de Transformación Homogénea
 La matriz general de transformación que relaciona el sistema de coordenadas de un eslabón $i$ con respecto al eslabón anterior $i-1$, se define de la siguiente manera:
 
-$$T_{i-1}^i = \begin{bmatrix} \cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\ \sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\ 0 & \sin\alpha_i & \cos\alpha_i & d_i \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$
+T_{i-1}^i =
+\begin{bmatrix}
+\cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\
+\sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\
+0 & \sin\alpha_i & \cos\alpha_i & d_i \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
 
 El modelo cinemático completo se obtiene mediante la premultiplicación encadenada de las matrices individuales, determinando la pose espacial de la herramienta respecto al sistema de coordenadas inercial (Base):
 
-$$T_0^4 = T_0^1 \cdot T_1^2 \cdot T_2^3 \cdot T_3^4$$
+$$
+T_0^4 = T_0^1 \cdot T_1^2 \cdot T_2^3 \cdot T_3^4
+$$
 
 El resultado de este producto matricial genera la matriz $T_0^4$, de la cual se extraen directamente las coordenadas cartesianas ($x, y, z$) desde el vector de traslación (última columna), y la orientación espacial (Roll, Pitch, Yaw) mediante la descomposición geométrica de la submatriz de rotación de $3 \times 3$.
-
-### ⚙️ Consideración Geométrica (Offset de Hombro)
-Se incorpora un "Offset Geométrico" de forma analítica en el desarrollo del script. Mecánicamente, la coordenada $0^\circ$ de la articulación del hombro ($q_2$) sitúa el eslabón en posición totalmente vertical. No obstante, bajo la convención DH estándar, la posición $0^\circ$ se alinea perpendicularmente sobre el eje $X_1$. Para conciliar el modelo matemático analítico con el hardware físico, se introduce una compensación de fase de $-\frac{\pi}{2}$ radianes ($-90^\circ$) sobre el ángulo $\theta_2$, garantizando un seguimiento exacto.
 
 ---
 
