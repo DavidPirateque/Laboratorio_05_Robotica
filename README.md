@@ -105,7 +105,7 @@ cd ~/Laboratorio5/phantom_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
-# 3. Lanzamiento del controlador (Ejemplo para simulación visual en RViz)
+# 3. Lanzamiento del controlador ejecutar alguno de estos:
 
 ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py
 
