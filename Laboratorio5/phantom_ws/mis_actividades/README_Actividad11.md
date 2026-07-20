@@ -13,7 +13,7 @@ Adicionalmente, la interfaz permite evaluar la cinemática directa para las cinc
 
 La cinemática directa se resuelve mediante la asignación sistemática de sistemas de referencia a cada eslabón del manipulador. A continuación, se presenta la tabla de parámetros de Denavit-Hartenberg extraída de la arquitectura mecánica del Phantom X Pincher:
 
-| Junta $i$ | $\theta_i$ | $d_i$ | $a_i$ | $\alpha_i$ |
+| Articulación ($i$) | $\theta_i$ (Angulo en Zi) | $d_i$ (Distancia en Zi) | $a_i$ (Traslación Xi) | $\alpha_i$ (Angulo en Xi) |
 | :---: | :---: | :---: | :---: | :---: |
 | **1 (Base)** | $\theta_1$ | $L_1$ | $0$ | $-\frac{\pi}{2}$ |
 | **2 (Hombro)** | $\theta_2$ | $0$ | $L_2$ | $0^\circ$ |
@@ -27,12 +27,12 @@ La matriz general de transformación que relaciona el sistema de coordenadas de 
 
 $$
 ^{i-1}T_i =
-\begin{bmatrix}
+\left[ \begin{array}{cccc}
 \cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\
 \sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\
 0 & \sin\alpha_i & \cos\alpha_i & d_i \\
 0 & 0 & 0 & 1
-\end{bmatrix}
+\end{array} \right]
 $$
 
 El modelo cinemático completo se obtiene mediante la premultiplicación encadenada de las matrices individuales, determinando la pose espacial de la herramienta respecto al sistema de coordenadas inercial (Base):
