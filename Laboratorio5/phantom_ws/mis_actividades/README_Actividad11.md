@@ -15,10 +15,10 @@ La cinemática directa se resuelve mediante la asignación sistemática de siste
 
 | Junta $i$ | $\theta_i$ | $d_i$ | $a_i$ | $\alpha_i$ |
 | :---: | :---: | :---: | :---: | :---: |
-| **1** | $\theta_1$ | $L_1$ | $0$ | $-90^\circ$ |
-| **2** | $\theta_2$ | $0$ | $L_2$ | $0^\circ$ |
-| **3** | $\theta_3$ | $0$ | $L_3$ | $0^\circ$ |
-| **4** | $\theta_4$ | $0$ | $L_4$ | $0^\circ$ |
+| **1 (Base)** | $\theta_1$ | $L_1$ | $0$ | $-\frac{\pi}{2}$ |
+| **2 (Hombro)** | $\theta_2$ | $0$ | $L_2$ | $0$ |
+| **3 (Codo)** | $\theta_3$ | $0$ | $L_3$ | $0$ |
+| **4 (Muñeca)** | $\theta_4$ | $0$ | $L_4$ | $0$ |
 
 *(Nota: Los términos $L_1, L_2, L_3, L_4$ corresponden a las longitudes físicas de los eslabones medidas en milímetros).*
 
@@ -42,6 +42,9 @@ T_0^4 = T_0^1 \cdot T_1^2 \cdot T_2^3 \cdot T_3^4
 $$
 
 El resultado de este producto matricial genera la matriz $T_0^4$, de la cual se extraen directamente las coordenadas cartesianas ($x, y, z$) desde el vector de traslación (última columna), y la orientación espacial (Roll, Pitch, Yaw) mediante la descomposición geométrica de la submatriz de rotación de $3 \times 3$.
+
+### ⚙️ Consideración Geométrica (Offset de Hombro)
+Se incorpora un "Offset Geométrico" de forma analítica en el desarrollo del algoritmo. Mecánicamente, la coordenada $0^\circ$ de la articulación del hombro ($\theta_2$) sitúa el eslabón en posición totalmente vertical (apuntando hacia arriba). No obstante, bajo la convención DH estándar, la posición $0^\circ$ se alinea perpendicularmente sobre el eje longitudinal $X_1$. Para conciliar el modelo matemático analítico con la respuesta del hardware físico, se introduce una compensación de fase de $-\frac{\pi}{2}$ radianes ($-90^\circ$) sobre el ángulo $\theta_2$, garantizando un seguimiento exacto en el cálculo tridimensional.
 
 ---
 
@@ -69,7 +72,7 @@ python3 mis_actividades/actividad11.py
 ```
 
 ## 🎯 Interfaz y Flujo de Trabajo
-1. **Configuraciones de Prueba:** Mediante el menú de selección superior, es posible cargar de manera instantánea cualquiera de las 5 configuraciones de prueba predefinidas. Al accionar el control "Cargar Configuración", los valores angulares poblarán las variables de entrada automáticamente.
+1. **Configuraciones de Prueba:** Mediante el menú de selección superior, es posible cargar de manera instantánea cualquiera de las 5 configuraciones de prueba predefinidas (Actividad 7). Al accionar el control "Cargar Configuración", los valores angulares poblarán las variables de entrada automáticamente.
 2. **Entrada Manual:** El sistema permite el ingreso manual de vectores articulares ($q_1, q_2, q_3, q_4$) mediante selectores numéricos. El algoritmo restringe estructuralmente la inserción de datos, limitándolos al rango de seguridad definido empíricamente en la Actividad 6.
 3. **Cálculo y Movimiento:** Al accionar el comando **▶ MOVER Y CALCULAR CINEMÁTICA**, el sistema despliega dos rutinas concurrentes:
    * Ejecuta el producto matricial de las transformaciones homogéneas e hila la extracción de resultados espaciales.
