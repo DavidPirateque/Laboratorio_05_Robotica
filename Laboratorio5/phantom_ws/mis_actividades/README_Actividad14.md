@@ -9,7 +9,7 @@ El sistema cuenta con la capacidad de ejecutar el trazado continuo de las siguie
 1. **Triángulo:** Interpolación lineal entre tres vértices coplanares.
 2. **Cuadrado:** Trazado ortogonal de cuatro segmentos equidistantes.
 3. **Círculo:** Aproximación paramétrica mediante la interpolación discreta de múltiples puntos iterados sobre la ecuación de una circunferencia.
-4. **Iniciales del Equipo:** Generación tipográfica mediante un diccionario vectorial que parametriza los trazos individuales de cada carácter, permitiendo el espaciado dinámico de secuencias alfanuméricas (e.g., 'D', 'S', 'P', 'J').
+4. **Iniciales del Equipo:** Generación tipográfica mediante un diccionario vectorial que parametriza los trazos individuales de cada carácter, permitiendo el espaciado dinámico de secuencias alfanuméricas (e.g., 'D', 'S', 'P', 'C','F').
 
 ### 📍 Lógica de Renderizado y Desplazamiento (Offset Z)
 Para la representación visual, el algoritmo pública mensajes de tipo `visualization_msgs/Marker` sobre el tópico de simulación, depositando esferas paramétricas (color cian, $10$ mm de diámetro) que emulan el rastro físico de la herramienta a lo largo del espacio de trabajo tridimensional. 
