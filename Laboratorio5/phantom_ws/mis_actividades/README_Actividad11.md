@@ -1,34 +1,71 @@
-# Actividad 11 - Cinemática Directa (Parámetros DH)
+# Actividad 11: Cinemática Directa (Parámetros DH)
 
 ## 📖 Descripción
-Esta actividad implementa la Cinemática Directa del robot Phantom X Pincher X100 utilizando la convención estándar de matrices de Denavit-Hartenberg (DH). 
+En la presente actividad se implementa la Cinemática Directa del manipulador robótico Phantom X Pincher X100, fundamentada en la convención estándar de matrices de transformación de Denavit-Hartenberg (DH). 
 
-Tal como se solicita en la guía de laboratorio, el programa recibe los valores angulares de las cuatro articulaciones del brazo ($q_1, q_2, q_3, q_4$) y calcula la posición espacial cartesiana ($x, y, z$) junto con la orientación de la pinza mediante ángulos de Euler ($roll, pitch, yaw$). La interfaz incluye un acceso rápido a las 5 configuraciones de la Actividad 7, permitiendo al usuario realizar el cálculo teórico y enviar simultáneamente el comando al robot para comparar matemáticamente el resultado contra la posición visual observada en RViz.
+En estricto cumplimiento con los lineamientos de la práctica, se establece que el algoritmo obtenga los parámetros Denavit-Hartenberg del robot e implemente la cinemática directa. El sistema debe recibir los valores articulares de los cuatro eslabones principales ($q_1, q_2, q_3, q_4$) y calcular las coordenadas cartesianas espaciales junto con los ángulos de Euler de la herramienta ($x, y, z, roll, pitch, yaw$). 
+
+Adicionalmente, la interfaz permite evaluar la cinemática directa para las cinco configuraciones de la Actividad 7, facilitando la validación matemática al comparar la posición calculada teóricamente con la posición gráfica observada en el simulador RViz.
+
+---
+
+## 📐 Fundamento Matemático (Parámetros DH)
+
+La cinemática directa se resuelve mediante la asignación sistemática de sistemas de referencia a cada eslabón del manipulador. A continuación, se presenta la tabla de parámetros de Denavit-Hartenberg extraída de la arquitectura mecánica del Phantom X Pincher:
+
+| Articulación ($i$) | $\theta_i$ (Rotación Z) | $d_i$ (Traslación Z) | $a_i$ (Traslación X) | $\alpha_i$ (Rotación X) |
+| :---: | :---: | :---: | :---: | :---: |
+| **1 (Base)** | $q_1$ | $L_1$ | $0$ | $\frac{\pi}{2}$ |
+| **2 (Hombro)** | $q_2 - \frac{\pi}{2}$ | $0$ | $L_2$ | $0$ |
+| **3 (Codo)** | $q_3$ | $0$ | $L_3$ | $0$ |
+| **4 (Muñeca)** | $q_4$ | $0$ | $L_4$ | $0$ |
+
+*(Nota: Los términos $L_1, L_2, L_3, L_4$ corresponden a las longitudes físicas de los eslabones medidas en milímetros).*
+
+### Matrices de Transformación Homogénea
+La matriz general de transformación que relaciona el sistema de coordenadas de un eslabón $i$ con respecto al eslabón anterior $i-1$, se define de la siguiente manera:
+
+$$T_{i-1}^i = \begin{bmatrix} \cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\ \sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\ 0 & \sin\alpha_i & \cos\alpha_i & d_i \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+
+El modelo cinemático completo se obtiene mediante la premultiplicación encadenada de las matrices individuales, determinando la pose espacial de la herramienta respecto al sistema de coordenadas inercial (Base):
+
+$$T_0^4 = T_0^1 \cdot T_1^2 \cdot T_2^3 \cdot T_3^4$$
+
+El resultado de este producto matricial genera la matriz $T_0^4$, de la cual se extraen directamente las coordenadas cartesianas ($x, y, z$) desde el vector de traslación (última columna), y la orientación espacial (Roll, Pitch, Yaw) mediante la descomposición geométrica de la submatriz de rotación de $3 \times 3$.
+
+### ⚙️ Consideración Geométrica (Offset de Hombro)
+Se incorpora un "Offset Geométrico" de forma analítica en el desarrollo del script. Mecánicamente, la coordenada $0^\circ$ de la articulación del hombro ($q_2$) sitúa el eslabón en posición totalmente vertical. No obstante, bajo la convención DH estándar, la posición $0^\circ$ se alinea perpendicularmente sobre el eje $X_1$. Para conciliar el modelo matemático analítico con el hardware físico, se introduce una compensación de fase de $-\frac{\pi}{2}$ radianes ($-90^\circ$) sobre el ángulo $\theta_2$, garantizando un seguimiento exacto.
+
+---
 
 ## 🛠️ Requisitos
-El cálculo matricial avanzado requiere la librería `numpy`. Al estar en Ubuntu con ROS 2 Jazzy, instala las dependencias mediante el gestor de paquetes del sistema para mantener la integridad del entorno:
+El cálculo matricial avanzado requiere la disponibilidad de la librería `numpy`. Al operar bajo el entorno de Ubuntu con ROS 2 Jazzy, se requiere la instalación de las dependencias mediante el gestor de paquetes del sistema para preservar la integridad del entorno local:
 
 ```bash
 sudo apt update
 sudo apt install python3-tk python3-numpy
 ```
 
-## 🚀 Ejecución
-Abre una terminal en tu workspace y ejecuta el script de la interfaz:
+## 🚀 Instrucciones de Ejecución
+En una terminal independiente, se debe ingresar al espacio de trabajo, cargar el entorno y ejecutar el script correspondiente mediante las siguientes instrucciones:
 
 ```bash
-cd ~/ros2_jazzy/Lab5/Codigos/phantom_ws
+# 1. Navegación al espacio de trabajo
+cd ~/Laboratorio5/phantom_ws
+
+# 2. Carga del entorno de ROS 2 y del workspace compilado
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+# 3. Ejecución de la interfaz de cinemática directa
 python3 mis_actividades/actividad11.py
 ```
 
 ## 🎯 Interfaz y Flujo de Trabajo
-1. **Configuraciones de Prueba (Act. 7):** Utiliza el menú superior para cargar instantáneamente cualquiera de las 5 configuraciones predefinidas del laboratorio. Al hacer clic en "Cargar Configuración", los valores llenarán las casillas inferiores automáticamente.
-2. **Entrada Manual:** Si lo prefieres, ingresa valores personalizados para $q_1, q_2, q_3$ y $q_4$ en los selectores numéricos. La interfaz restringe matemáticamente las entradas a los límites seguros definidos en la Actividad 6.
-3. **Cálculo y Movimiento:** Al presionar **▶ MOVER Y CALCULAR CINEMÁTICA**, el script realiza dos acciones en paralelo:
-   * Calcula la multiplicación de matrices de transformación homogénea ($T_{0}^{4} = T_{0}^{1} \cdot T_{1}^{2} \cdot T_{2}^{3} \cdot T_{3}^{4}$) y extrae los datos.
-   * Envía la configuración articular al robot físico/simulado.
-4. **Análisis de Resultados:** El panel inferior "Resultados Teóricos" actualizará inmediatamente las coordenadas $X, Y, Z$ (mostradas en milímetros para mayor legibilidad) y la orientación $Roll, Pitch, Yaw$ (en grados). 
-5. **Validación Visual:** Compara estos valores teóricos impresos en la interfaz con la posición del TCP (Tool Center Point) reportada visualmente por las grillas de RViz.
-
-## ⚙️ Notas Matemáticas del Hardware
-El código implementa un "Offset Geométrico" transparente para el usuario. Físicamente, el ángulo $0^\circ$ del hombro ($q_2$) del Phantom X apunta hacia arriba. Sin embargo, en la convención clásica de Denavit-Hartenberg, $0^\circ$ apunta hacia adelante (eje X). El script aplica automáticamente una resta de $90^\circ$ ($-\frac{\pi}{2}$ radianes) en la matriz $T_{1}^{2}$ para reconciliar el modelo matemático con la realidad mecánica.
+1. **Configuraciones de Prueba:** Mediante el menú de selección superior, es posible cargar de manera instantánea cualquiera de las 5 configuraciones de prueba predefinidas. Al accionar el control "Cargar Configuración", los valores angulares poblarán las variables de entrada automáticamente.
+2. **Entrada Manual:** El sistema permite el ingreso manual de vectores articulares ($q_1, q_2, q_3, q_4$) mediante selectores numéricos. El algoritmo restringe estructuralmente la inserción de datos, limitándolos al rango de seguridad definido empíricamente en la Actividad 6.
+3. **Cálculo y Movimiento:** Al accionar el comando **▶ MOVER Y CALCULAR CINEMÁTICA**, el sistema despliega dos rutinas concurrentes:
+   * Ejecuta el producto matricial de las transformaciones homogéneas e hila la extracción de resultados espaciales.
+   * Transmite el comando de vector articular hacia el controlador de hardware o simulador en RViz.
+4. **Análisis de Resultados:** El panel de "Resultados Teóricos" se actualiza de forma síncrona, exponiendo las coordenadas cartesianas $x, y, z$ (expresadas en milímetros para efectos de precisión de lectura) y la orientación espacial en ángulos de Euler (Roll, Pitch, Yaw).
+5. **Validación Visual:** El procedimiento experimental concluye al contrastar analíticamente los valores teóricos arrojados por el modelo matemático contra el posicionamiento espacial del TCP verificado sobre la retícula tridimensional del simulador RViz.
