@@ -44,7 +44,7 @@ sudo apt install python3-tk python3-venv
 
 **2. Creación y Configuración del Entorno Virtual (Una sola vez):**
 ```bash
-cd ~/ros2_jazzy/Lab5/Codigos/phantom_ws
+cd ~/Laboratorio5/phantom_ws
 python3 -m venv mi_entorno
 source mi_entorno/bin/activate
 pip install librosa numpy pandas pygame pillow
@@ -59,7 +59,7 @@ pip install librosa numpy pandas pygame pillow
 Abre una terminal, activa tu entorno virtual y extrae las características:
 
 ```bash
-cd ~/ros2_jazzy/Lab5/Codigos/phantom_ws
+cd ~/Laboratorio5/phantom_ws
 source mi_entorno/bin/activate
 python3 mis_actividades/analizador_audio.py
 ```
