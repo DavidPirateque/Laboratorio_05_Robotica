@@ -88,6 +88,9 @@ source mi_entorno/bin/activate
 
 # Instalación de dependencias de audio e interfaz gráfica
 pip install librosa pandas pygame pillow
+
+# En caso de error
+rm -rf mi_entorno && sudo apt install -y python3-pip python3-venv && python3 -m venv mi_entorno && source mi_entorno/bin/activate && pip install --upgrade pip && pip install librosa numpy pandas pygame pillow
 ```
 
 ---
