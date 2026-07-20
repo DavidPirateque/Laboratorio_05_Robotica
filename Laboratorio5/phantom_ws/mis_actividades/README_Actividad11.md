@@ -27,12 +27,14 @@ La matriz general de transformación que relaciona el sistema de coordenadas de 
 
 $$
 ^{i-1}T_i =
-\begin{bmatrix}
+\left\lbrack
+\begin{matrix}
 \cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\
 \sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\
 0 & \sin\alpha_i & \cos\alpha_i & d_i \\
 0 & 0 & 0 & 1
-\end{bmatrix}
+\end{matrix}
+\right\rbrack
 $$
 
 El modelo cinemático completo se obtiene mediante la premultiplicación encadenada de las matrices individuales, determinando la pose espacial de la herramienta respecto al sistema de coordenadas inercial (Base):
