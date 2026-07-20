@@ -20,30 +20,28 @@ La cinemática directa se resuelve mediante la asignación sistemática de siste
 | **3 (Codo)** | $\theta_3$ | $0$ | $L_3$ | $0^\circ$ |
 | **4 (Muñeca)** | $\theta_4$ | $0$ | $L_4$ | $0^\circ$ |
 
-*(Nota: Los términos $L_1, L_2, L_3, L_4$ corresponden a las longitudes físicas de los eslabones medidas en milímetros).*
+*(Nota: Los términos L1, L2, L3 y L4 corresponden a las longitudes físicas de los eslabones medidas en milímetros).*
 
 ### Matrices de Transformación Homogénea
 La matriz general de transformación que relaciona el sistema de coordenadas de un eslabón $i$ con respecto al eslabón anterior $i-1$, se define de la siguiente manera:
 
 $$
-{}^{i-1}T_{i} =
-\left[
-\begin{matrix}
+^{i-1}T_i =
+\begin{bmatrix}
 \cos\theta_i & -\sin\theta_i\cos\alpha_i & \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\
 \sin\theta_i & \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\
 0 & \sin\alpha_i & \cos\alpha_i & d_i \\
 0 & 0 & 0 & 1
-\end{matrix}
-\right]
+\end{bmatrix}
 $$
 
 El modelo cinemático completo se obtiene mediante la premultiplicación encadenada de las matrices individuales, determinando la pose espacial de la herramienta respecto al sistema de coordenadas inercial (Base):
 
 $$
-{}^{0}T_{4} = {}^{0}T_{1} \cdot {}^{1}T_{2} \cdot {}^{2}T_{3} \cdot {}^{3}T_{4}
+^{0}T_4 = ^{0}T_1 \cdot ^{1}T_2 \cdot ^{2}T_3 \cdot ^{3}T_4
 $$
 
-El resultado de este producto matricial genera la matriz ${}^{0}T_{4}$, de la cual se extraen directamente las coordenadas cartesianas ($x, y, z$) desde el vector de traslación (última columna), y la orientación espacial (Roll, Pitch, Yaw) mediante la descomposición geométrica de la submatriz de rotación de $3 \times 3$.
+El resultado de este producto matricial genera la matriz $^{0}T_4$, de la cual se extraen directamente las coordenadas cartesianas ($x, y, z$) desde el vector de traslación (última columna), y la orientación espacial (Roll, Pitch, Yaw) mediante la descomposición geométrica de la submatriz de rotación de $3 \times 3$.
 
 ### ⚙️ Consideración Geométrica (Offset de Hombro)
 Se incorpora un "Offset Geométrico" de forma analítica en el desarrollo del algoritmo. Mecánicamente, la coordenada $0^\circ$ de la articulación del hombro ($\theta_2$) sitúa el eslabón en posición totalmente vertical (apuntando hacia arriba). No obstante, bajo la convención DH estándar, la posición $0^\circ$ se alinea perpendicularmente sobre el eje longitudinal $X_1$. Para conciliar el modelo matemático analítico con la respuesta del hardware físico, se introduce una compensación de fase de $-\frac{\pi}{2}$ radianes ($-90^\circ$) sobre el ángulo $\theta_2$, garantizando un seguimiento exacto en el cálculo tridimensional.
